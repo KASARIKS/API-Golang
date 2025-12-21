@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+
+	"github.com/kasariks/api_golang/service/user"
 )
 
 type APIServer struct {
@@ -20,6 +22,9 @@ func NewAPIServer(addr string, db *sql.DB) *APIServer {
 
 func (s *APIServer) Run() error {
 	router := http.NewServeMux()
+
+	userHandler := user.NewHanlder()
+	userHandler.RegisterRoutes(router)
 
 	log.Println("Listening on", s.addr)
 
