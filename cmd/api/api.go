@@ -23,7 +23,8 @@ func NewAPIServer(addr string, db *sql.DB) *APIServer {
 func (s *APIServer) Run() error {
 	router := http.NewServeMux()
 
-	userHandler := user.NewHanlder()
+	userStore := user.NewStore(s.db)
+	userHandler := user.NewHanlder(userStore)
 	userHandler.RegisterRoutes(router)
 
 	log.Println("Listening on", s.addr)
