@@ -42,13 +42,13 @@ func (h *Handler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// If the user doesn't exist
 	hashedPassword, err := auth.HashPassword(payload.Password)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	// If the user doesn't exist
 	err = h.store.CreateUser(types.User{
 		FirstName: payload.FirstName,
 		LastName:  payload.LastName,
