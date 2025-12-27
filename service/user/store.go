@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/kasariks/api_golang/types"
 )
@@ -42,10 +43,41 @@ func (s *Store) GetUserByEmail(email string) (*types.User, error) {
 }
 
 func (s *Store) GetUserById(id int) (*types.User, error) {
-	return nil, nil
+	rows, err := s.db.Query("SELECT * FROM users WHERE id = :id",
+		sql.Named("id", id))
+
+	if err != nil {
+		return nil, err
+	}
+
+	// var u *types.User
+	u := new(types.User)
+	for rows.Next() {
+		u, err = ScanRowIntoUser(rows)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if u.ID == 0 {
+		return nil, fmt.Errorf("user not found")
+	}
+
+	return u, nil
 }
 
 func (s *Store) CreateUser(user types.User) error {
+	_, err := s.db.Exec("INSERT INTO users (firstName, lastName, email, password, createdAt) "+
+		"VALUES (:firstName, :lastName, :email, :password, :createdAt)",
+		sql.Named("firstName", user.FirstName),
+		sql.Named("lastName", user.LastName),
+		sql.Named("email", user.Email),
+		sql.Named("password", user.Password),
+		sql.Named("createdAt", time.Now().String()))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

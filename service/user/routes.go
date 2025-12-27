@@ -26,7 +26,34 @@ func (h *Handler) RegisterRoutes(router *http.ServeMux) {
 }
 
 func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("login"))
+	// Get json payload
+	var payload types.LoginUserPayload
+	if err := utils.ParseJSON(r, &payload); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// Validate the payload
+	if _, err := mail.ParseAddress(payload.Email); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// Check if the user exists
+	u, err := h.store.GetUserByEmail(payload.Email)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user with email %s doesn't exist", payload.Email))
+		return
+	}
+
+	// Check password
+	err = auth.ComparePasswords(u.Password, payload.Password)
+	if err == auth.IncorrectPassword {
+		utils.WriteError(w, http.StatusNotAcceptable, err)
+	} else if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+	}
+
 }
 
 func (h *Handler) HandleRegister(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +91,7 @@ func (h *Handler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 		Password:  hashedPassword,
 	})
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
+		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 

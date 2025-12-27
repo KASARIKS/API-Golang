@@ -3,7 +3,7 @@ package db
 import "database/sql"
 
 const usersTable = "CREATE TABLE IF NOT EXISTS users (" +
-	"id INT NOT NULL PRIMARY KEY," +
+	"id INTEGER PRIMARY KEY AUTOINCREMENT," +
 	"firstName VARCHAR(255) NOT NULL," +
 	"lastName VARCHAR(255) NOT NULL," +
 	"email VARCHAR(255) NOT NULL UNIQUE," +
@@ -12,7 +12,7 @@ const usersTable = "CREATE TABLE IF NOT EXISTS users (" +
 	");"
 
 const productsTable = "CREATE TABLE IF NOT EXISTS products (" +
-	"id INT NOT NULL PRIMARY KEY," +
+	"id INTEGER PRIMARY KEY AUTOINCREMENT," +
 	"name VARCHAR(255) NOT NULL," +
 	"description TEXT NOT NULL," +
 	"image VARCHAR(255) NOT NULL," +
@@ -22,7 +22,7 @@ const productsTable = "CREATE TABLE IF NOT EXISTS products (" +
 	");"
 
 const ordersTable = "CREATE TABLE IF NOT EXISTS orders (" +
-	"id INT NOT NULL PRIMARY KEY," +
+	"id INTEGER PRIMARY KEY AUTOINCREMENT," +
 	"userId INT NOT NULL," +
 	"total DECIMAL(10, 2) NOT NULL," +
 	"status TEXT NOT NULL," +
@@ -32,7 +32,7 @@ const ordersTable = "CREATE TABLE IF NOT EXISTS orders (" +
 	");"
 
 const ordersItemsTable = "CREATE TABLE IF NOT EXISTS order_items (" +
-	"id INT NOT NULL PRIMARY KEY," +
+	"id INTEGER PRIMARY KEY AUTOINCREMENT," +
 	"orderId INT NOT NULL," +
 	"productId INT NOT NULL," +
 	"quantity INT NOT NULL," +
