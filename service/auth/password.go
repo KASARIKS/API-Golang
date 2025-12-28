@@ -19,6 +19,7 @@ func HashPassword(password string) (string, error) {
 	return string(hash), nil
 }
 
+// Error equils IncorrectPassword error if passwords are not equil
 func ComparePasswords(currentPassHashed, gottenPass string) error {
 	gottenPassHashed, err := HashPassword(gottenPass)
 	if err != nil {
