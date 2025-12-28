@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/mail"
 
+	"github.com/kasariks/api_golang/config"
 	"github.com/kasariks/api_golang/service/auth"
 	"github.com/kasariks/api_golang/types"
 	"github.com/kasariks/api_golang/utils"
@@ -50,10 +51,20 @@ func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	err = auth.ComparePasswords(u.Password, payload.Password)
 	if err == auth.IncorrectPassword {
 		utils.WriteError(w, http.StatusNotAcceptable, err)
+		return
 	} else if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
 	}
 
+	// Send token
+	token, err := auth.CreateJWT([]byte(config.Envs.JWTSecret), u.ID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token})
 }
 
 func (h *Handler) HandleRegister(w http.ResponseWriter, r *http.Request) {

@@ -15,4 +15,7 @@ require (
 	modernc.org/memory v1.11.0 // indirect
 )
 
-require modernc.org/sqlite v1.41.0
+require (
+	github.com/golang-jwt/jwt/v5 v5.3.0
+	modernc.org/sqlite v1.41.0
+)
