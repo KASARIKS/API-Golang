@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/kasariks/api_golang/service/cart"
+	"github.com/kasariks/api_golang/service/order"
 	"github.com/kasariks/api_golang/service/product"
 	"github.com/kasariks/api_golang/service/user"
 )
@@ -39,4 +41,8 @@ func (s *APIServer) registerServicesRoutes() {
 	productStore := product.NewStore(s.db)
 	productHandler := product.NewHandler(productStore)
 	productHandler.RegisterRoutes(s.router)
+
+	orderStore := order.NewStore(s.db)
+	cartStore := cart.NewHandler(orderStore, productStore, userStore)
+	cartStore.RegisterRoutes(s.router)
 }
